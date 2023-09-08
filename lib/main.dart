@@ -70,12 +70,26 @@ class Dice extends StatelessWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _counter = 1;
   int _currentDiceNo = 1;
   int _numberOfDice = 1; // the number of dice to be rolled
 
   List<int?> _diceResults = List.filled(25,null);
 
+  void _rollDice(){
+    _numberOfDice = _counter;
+    setState(() {
+      for (int i = 0; i < _numberOfDice; i++) {
+        _currentDiceNo = Random().nextInt(6) + 1; // Generate a new random value
+        _diceResults[i] = _currentDiceNo;
+      }
+    });
+  }
+  void _decrementCounter() {
+    setState(() {
+      _counter = _counter > 1 ? _counter - 1 : 1;
+    });
+  }
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -84,10 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      for (int i = 0; i < _numberOfDice; i++) {
-        _currentDiceNo = Random().nextInt(6) + 1; // Generate a new random value
-        _diceResults[i] = _currentDiceNo;
-      }
      });
   }
   @override
@@ -126,11 +136,25 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'You have pushed the button this many times:',
+                'The Current Dice count is:',
               ),
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: _decrementCounter,
+                      child: Icon(Icons.remove),
+                  ),
+                  SizedBox(width: 16.0),
+                  ElevatedButton(
+                      onPressed: _incrementCounter,
+                      child: Icon(Icons.add),
+                  ),
+                ],
               ),
               TextField(
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -141,7 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (value) {
 
                   setState(() {
-                    _numberOfDice = int.parse(value);
+
+                    _counter = int.parse(value);
                   });
                 },
               ),
@@ -168,10 +193,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _rollDice,
+        tooltip: 'Roll the Dice!',
         child: const Icon(Icons.add),
       ),
+
 
       // This trailing comma makes auto-formatting nicer for build methods.
     );
